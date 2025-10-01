@@ -37,7 +37,7 @@
 
 目前包含的游戏：
 - 扫雷游戏 (Minesweeper) - ✅ 已完成
-- 24点游戏 (24 Points) - 🚧 开发中
+- 24点游戏 (24 Points) - ✅ 已完成
 - 2048游戏 - 🚧 开发中
 
 ## 游戏特色
@@ -55,11 +55,34 @@
 - 胜负判断与游戏结果提示
 - 重新开始功能
 
+游戏界面特色：
+- 现代化毛玻璃视觉风格设计
+- 使用阴影和圆角增强界面层次感
+- 采用 emoji 图标（🚩💣⏱）增强视觉表现力
+- 精心调配的配色方案，追求专业和美观的界面
+- 响应式布局适配不同屏幕尺寸
+
 ### 🃏 24点游戏 (24 Points)
 
 一款经典的数学计算游戏，通过四则运算使四个数字的结果等于24。
 
-当前状态：开发中...
+主要功能：
+- 随机生成四张扑克牌
+- 支持加减乘除和括号运算
+- 智能表达式验证系统
+- 实时计时功能，记录您的挑战时间
+- 无解判断功能
+- 参考答案查看功能（通过优美弹窗展示）
+- 重新开始功能
+
+游戏界面特色：
+- 现代化毛玻璃视觉风格设计
+- 使用阴影和圆角增强界面层次感
+- 采用 emoji 图标（🃏⏱）增强视觉表现力
+- 拉长计时部分，突出时间信息
+- 精心调配的配色方案，追求专业和美观的界面
+- 响应式布局适配不同屏幕尺寸
+- 美观的弹窗式答案展示
 
 ### 🔢 2048游戏
 
@@ -84,13 +107,18 @@
 3. **面向对象设计**：通过类封装游戏逻辑和数据模型
 4. **路由导航**：实现页面间跳转与参数传递
 5. **事件处理**：处理用户交互事件如点击、长按等
+6. **定时器管理**：实现精确的计时功能
+7. **表达式解析**：自定义算法解析和计算数学表达式
+8. **弹窗交互**：使用系统弹窗增强用户体验
 
 ### 项目关键类
 
 - [Cell](file://D:\AAA_NissonCX\code\MineSweeperDemo1\entry\src\main\ets\model\Cell.ets): 扫雷游戏中单个格子的数据模型
+- [Card](file://D:\AAA_NissonCX\code\MineSweeperDemo1\entry\src\main\ets\model\Card.ets): 24点游戏中扑克牌的数据模型
+- [Game24Logic](file://D:\AAA_NissonCX\code\MineSweeperDemo1\entry\src\main\ets\model\Game24Logic.ets): 24点游戏核心逻辑实现
 - [MineSweeper](file://D:\AAA_NissonCX\code\MineSweeperDemo1\entry\src\main\ets\pages\Minesweeper.ets): 扫雷游戏主界面与核心逻辑
 - [Index](file://D:\AAA_NissonCX\code\MineSweeperDemo1\entry\src\main\ets\pages\Index.ets): 应用主页，展示游戏列表
-- [Game24Points](file://D:\AAA_NissonCX\code\MineSweeperDemo1\entry\src\main\ets\pages\24Points.ets): 24点游戏界面（开发中）
+- [Game24Points](file://D:\AAA_NissonCX\code\MineSweeperDemo1\entry\src\main\ets\pages\24Points.ets): 24点游戏界面
 - [Game2048](file://D:\AAA_NissonCX\code\MineSweeperDemo1\entry\src\main\ets\pages\2048.ets): 2048游戏界面（开发中）
 
 ## 快速开始
@@ -131,7 +159,8 @@
 │   │   │   ├── ets               # ArkTS 代码
 │   │   │   │   ├── entryability  # 应用生命周期管理
 │   │   │   │   ├── model         # 数据模型
-│   │   │   │   └── pages         # 页面组件
+│   │   │   │   ├── pages         # 页面组件
+│   │   │   │   └── utils         # 工具类
 │   │   │   └── resources         # 模块资源
 │   │   └── ohosTest              # 测试代码
 │   └── build-profile.json5       # 模块配置文件
@@ -146,12 +175,18 @@
 
 - [`Index.ets`](entry/src/main/ets/pages/Index.ets) - 应用主页，展示游戏列表
 - [`Minesweeper.ets`](entry/src/main/ets/pages/Minesweeper.ets) - 扫雷游戏主页面
-- [`24Points.ets`](entry/src/main/ets/pages/24Points.ets) - 24点游戏页面（开发中）
+- [`24Points.ets`](entry/src/main/ets/pages/24Points.ets) - 24点游戏页面
 - [`2048.ets`](entry/src/main/ets/pages/2048.ets) - 2048游戏页面（开发中）
 
 ### 数据模型
 
 - [`Cell.ets`](entry/src/main/ets/model/Cell.ets) - 扫雷游戏单元格数据模型
+- [`Card.ets`](entry/src/main/ets/model/Card.ets) - 24点游戏扑克牌数据模型
+- [`Game24Logic.ets`](entry/src/main/ets/model/Game24Logic.ets) - 24点游戏核心逻辑
+
+### 工具类
+
+- [`ExpressionEvaluator.ets`](entry/src/main/ets/utils/ExpressionEvaluator.ets) - 表达式计算工具
 
 ## 核心功能详解
 
@@ -182,12 +217,48 @@
    - 精心调配的配色方案，提升视觉体验
    - 响应式布局适配不同屏幕尺寸
 
+### 24点游戏实现细节
+
+24点游戏是本项目的另一核心功能，具有智能的表达式验证和美观的界面设计：
+
+1. **游戏初始化**
+   - 随机生成四张扑克牌
+   - 计算题目是否有解
+   - 预先计算所有可能的解法
+
+2. **表达式处理**
+   - 支持多种运算符输入（×÷− 会自动转换为标准运算符）
+   - 智能表达式解析和验证
+   - 数字匹配验证（确保使用的是当前题目中的数字）
+   - 结果计算和精度处理
+
+3. **游戏交互**
+   - 输入表达式并提交答案
+   - 判断题目是否无解
+   - 查看参考答案（通过美观弹窗展示）
+   - 实时计时功能
+
+4. **游戏状态管理**
+   - 实时计时功能，精确到秒
+   - 答案正确性判断
+   - 无解判断正确性验证
+   - 游戏结束状态管理
+
+5. **UI设计亮点**
+   - 使用 emoji 图标增强视觉效果（🃏⏱）
+   - 现代化的卡片式设计
+   - 精心调配的配色方案，提升视觉体验
+   - 响应式布局适配不同屏幕尺寸
+   - 美观的弹窗式答案展示
+
 ### 界面设计规范
 
 - 使用现代化的卡片式界面设计
 - 采用 emoji 图标替代部分文字标识，增强视觉表现力
 - 拉长计时部分，突出时间信息
 - 使用具有视觉冲击力的配色方案，追求专业和美观的界面
+- 统一的圆角和阴影设计，增强界面层次感
+- 响应式布局适配不同屏幕尺寸
 
 ## 开发规范
 
@@ -210,13 +281,13 @@
 
 ## 未来规划
 
-- [ ] 完善 24点游戏功能
 - [ ] 完善 2048游戏功能
 - [ ] 增加游戏难度选择
 - [ ] 添加游戏音效
 - [ ] 增加排行榜功能
 - [ ] 支持多语言
 - [ ] 优化UI/UX设计
+- [ ] 增加更多经典小游戏
 
 ## 许可证
 
