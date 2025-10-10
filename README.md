@@ -16,7 +16,7 @@
   </a>
 </p>
 
-> 基于 HarmonyOS 和 ArkTS 开发的经典益智游戏合集，包含扫雷、24点、2048 等多种趣味游戏
+> 基于 HarmonyOS 和 ArkTS 开发的经典益智游戏合集，包含扫雷、24点、拼图华容道等多种趣味游戏
 
 ## 📋 目录
 
@@ -38,6 +38,7 @@
 目前包含的游戏：
 - 扫雷游戏 (Minesweeper) - ✅ 已完成
 - 24点游戏 (24 Points) - ✅ 已完成
+- 拼图华容道 (Sliding Puzzle) - 🚧 开发中 (Demo版本)
 - 2048游戏 - 🚧 开发中
 
 ## 游戏特色
@@ -49,11 +50,18 @@
 主要功能：
 - 10x10 的游戏网格布局，共10个随机分布的地雷
 - 双模式操作：揭开模式 / 标记模式
-- 左键点击揭开方块，右键点击标记地雷
+- 通过切换操作模式来控制点击行为（点击在揭开模式下揭开方块，在标记模式下标记地雷）
 - 智能展开：点击空白区域可自动展开周围区域
 - 实时计时功能，记录您的挑战时间
 - 胜负判断与游戏结果提示
 - 重新开始功能
+
+游戏交互亮点：
+- 注重用户交互体验，特别针对手机端操作优化
+- 利用切换揭开模式来防误触，非常好的规避了手机端容易误触的问题
+- 双模式操作设计，用户可以方便地在"揭开"和"标记"模式间切换
+- 智能防误触机制，有效减少误操作带来的游戏体验下降
+- 清晰的模式指示，让用户始终了解当前操作模式
 
 游戏界面特色：
 - 现代化毛玻璃视觉风格设计
@@ -61,6 +69,7 @@
 - 采用 emoji 图标（🚩💣⏱）增强视觉表现力
 - 精心调配的配色方案，追求专业和美观的界面
 - 响应式布局适配不同屏幕尺寸
+- 支持明暗主题切换
 
 ### 🃏 24点游戏 (24 Points)
 
@@ -83,6 +92,29 @@
 - 精心调配的配色方案，追求专业和美观的界面
 - 响应式布局适配不同屏幕尺寸
 - 美观的弹窗式答案展示
+- 支持明暗主题切换
+
+### 🧩 拼图华容道 (Sliding Puzzle)
+
+一款经典的滑动拼图游戏，通过移动方块使其按数字顺序排列。
+
+当前状态：开发中 (Demo版本) - 已实现基本游戏功能，包括拼图生成、打乱、移动和完成判断，但仍在完善中。
+
+主要功能：
+- 4x4 的拼图网格布局
+- 随机打乱的初始状态
+- 智能移动检测，仅允许合法移动
+- 实时计时和步数统计功能
+- 胜负判断与游戏结果提示
+- 重新开始功能
+
+游戏界面特色：
+- 现代化毛玻璃视觉风格设计
+- 使用阴影和圆角增强界面层次感
+- 采用 emoji 图标（🧩⏱）增强视觉表现力
+- 精心调配的配色方案，追求专业和美观的界面
+- 响应式布局适配不同屏幕尺寸
+- 支持明暗主题切换
 
 ### 🔢 2048游戏
 
@@ -110,16 +142,22 @@
 6. **定时器管理**：实现精确的计时功能
 7. **表达式解析**：自定义算法解析和计算数学表达式
 8. **弹窗交互**：使用系统弹窗增强用户体验
+9. **主题管理**：实现全局明暗主题切换功能
 
 ### 项目关键类
 
-- [Cell](file://D:\AAA_NissonCX\code\MineSweeperDemo1\entry\src\main\ets\model\Cell.ets): 扫雷游戏中单个格子的数据模型
-- [Card](file://D:\AAA_NissonCX\code\MineSweeperDemo1\entry\src\main\ets\model\Card.ets): 24点游戏中扑克牌的数据模型
-- [Game24Logic](file://D:\AAA_NissonCX\code\MineSweeperDemo1\entry\src\main\ets\model\Game24Logic.ets): 24点游戏核心逻辑实现
-- [MineSweeper](file://D:\AAA_NissonCX\code\MineSweeperDemo1\entry\src\main\ets\pages\Minesweeper.ets): 扫雷游戏主界面与核心逻辑
-- [Index](file://D:\AAA_NissonCX\code\MineSweeperDemo1\entry\src\main\ets\pages\Index.ets): 应用主页，展示游戏列表
-- [Game24Points](file://D:\AAA_NissonCX\code\MineSweeperDemo1\entry\src\main\ets\pages\24Points.ets): 24点游戏界面
-- [Game2048](file://D:\AAA_NissonCX\code\MineSweeperDemo1\entry\src\main\ets\pages\2048.ets): 2048游戏界面（开发中）
+- [Cell](entry/src/main/ets/model/Cell.ets): 扫雷游戏中单个格子的数据模型
+- [Card](entry/src/main/ets/model/Card.ets): 24点游戏中扑克牌的数据模型
+- [PuzzlePiece](entry/src/main/ets/model/PuzzlePiece.ets): 拼图华容道中拼图块的数据模型
+- [Game24Logic](entry/src/main/ets/model/Game24Logic.ets): 24点游戏核心逻辑实现
+- [ExpressionEvaluator](entry/src/main/ets/utils/ExpressionEvaluator.ets): 表达式计算工具
+- [ThemeManager](entry/src/main/ets/model/ThemeManager.ets): 主题管理器
+- [Theme](entry/src/main/ets/model/Theme.ets): 主题配置类
+- [Index](entry/src/main/ets/pages/Index.ets): 应用主页，展示游戏列表
+- [Minesweeper](entry/src/main/ets/pages/Minesweeper.ets): 扫雷游戏主界面与核心逻辑
+- [Game24Points](entry/src/main/ets/pages/24Points.ets): 24点游戏界面
+- [SlidingPuzzle](entry/src/main/ets/pages/SlidingPuzzle.ets): 拼图华容道游戏界面
+- [Game2048](entry/src/main/ets/pages/2048.ets): 2048游戏界面（开发中）
 
 ## 快速开始
 
@@ -176,13 +214,17 @@
 - [`Index.ets`](entry/src/main/ets/pages/Index.ets) - 应用主页，展示游戏列表
 - [`Minesweeper.ets`](entry/src/main/ets/pages/Minesweeper.ets) - 扫雷游戏主页面
 - [`24Points.ets`](entry/src/main/ets/pages/24Points.ets) - 24点游戏页面
+- [`SlidingPuzzle.ets`](entry/src/main/ets/pages/SlidingPuzzle.ets) - 拼图华容道游戏页面
 - [`2048.ets`](entry/src/main/ets/pages/2048.ets) - 2048游戏页面（开发中）
 
 ### 数据模型
 
 - [`Cell.ets`](entry/src/main/ets/model/Cell.ets) - 扫雷游戏单元格数据模型
 - [`Card.ets`](entry/src/main/ets/model/Card.ets) - 24点游戏扑克牌数据模型
+- [`PuzzlePiece.ets`](entry/src/main/ets/model/PuzzlePiece.ets) - 拼图华容道拼图块数据模型
 - [`Game24Logic.ets`](entry/src/main/ets/model/Game24Logic.ets) - 24点游戏核心逻辑
+- [`Theme.ets`](entry/src/main/ets/model/Theme.ets) - 主题配置类
+- [`ThemeManager.ets`](entry/src/main/ets/model/ThemeManager.ets) - 主题管理器
 
 ### 工具类
 
@@ -201,8 +243,7 @@
 
 2. **游戏交互**
    - 双模式操作：揭开模式 / 标记模式
-   - 左键点击揭开格子
-   - 右键点击标记/取消标记地雷
+   - 通过切换操作模式来控制点击行为（点击在揭开模式下揭开方块，在标记模式下标记地雷）
    - 智能展开功能：点击空白格子时自动展开周围区域
 
 3. **游戏状态管理**
@@ -216,6 +257,7 @@
    - 现代化的卡片式设计
    - 精心调配的配色方案，提升视觉体验
    - 响应式布局适配不同屏幕尺寸
+   - 支持明暗主题切换
 
 ### 24点游戏实现细节
 
@@ -250,6 +292,7 @@
    - 精心调配的配色方案，提升视觉体验
    - 响应式布局适配不同屏幕尺寸
    - 美观的弹窗式答案展示
+   - 支持明暗主题切换
 
 ### 界面设计规范
 
@@ -259,6 +302,7 @@
 - 使用具有视觉冲击力的配色方案，追求专业和美观的界面
 - 统一的圆角和阴影设计，增强界面层次感
 - 响应式布局适配不同屏幕尺寸
+- 支持全局明暗主题切换
 
 ## 开发规范
 
