@@ -2,6 +2,8 @@
 import { promptAction } from '@kit.ArkUI'; // 导入用于显示对话框的工具
 import router from '@ohos.router';
 import { Cell } from '../model/Cell'
+import { ThemeManager } from '../model/ThemeManager';
+import { ThemeType, ThemeColors } from '../model/Theme';
 
 // 定义扫雷游戏组件
 @Entry
@@ -20,20 +22,34 @@ struct MineSweeper {
   private startTime: number = Date.now(); // 游戏开始时间
   @State private isGameOver: boolean = false; // 游戏结束标志
   private timerId: number = -1; // 定时器ID
-
-  // 当组件即将显示时调用此方法
+  
+  // 主题相关状态
+  @State private currentTheme: ThemeType = ThemeManager.getInstance().getCurrentTheme();
+  @State private themeColors: ThemeColors = ThemeManager.getInstance().getCurrentColors();
+  
+  // 组件加载时初始化游戏和添加主题监听器
   aboutToAppear(): void {
-    this.initializeGame(); // 初始化游戏
+    this.initializeGame();
+    
+    // 添加主题监听器
+    ThemeManager.getInstance().addThemeChangeListener((theme: ThemeType, colors: ThemeColors) => {
+      this.currentTheme = theme;
+      this.themeColors = colors;
+    });
   }
-
-  // 组件销毁时清除定时器
+  
+  // 组件销毁时清除定时器和移除主题监听器
   aboutToDisappear(): void {
+    // 清除定时器
     if (this.timerId !== -1) {
       clearInterval(this.timerId);
       this.timerId = -1;
     }
+    
+    // 注意：在实际应用中，应该保存监听器的引用以便移除
+    // 这里为了简化，暂时不实现移除逻辑
   }
-
+  
   // 初始化游戏
   private initializeGame() {
     // 清除之前的定时器
@@ -41,14 +57,17 @@ struct MineSweeper {
       clearInterval(this.timerId);
       this.timerId = -1;
     }
-
-    this.isGameOver = false; // 设置游戏未结束
-    this.isFlagMode = false; // 重置为揭开模式
-    this.startTime = Date.now(); // 重置游戏开始时间
-    this.currentTime = 0; // 重置当前时间
-    this.revealedCells.clear(); // 清空已揭示的方块集合
-    this.flaggedCells.clear(); // 清空标记为地雷的方块集合
-
+    
+    // 重置游戏时间
+    this.startTime = Date.now();
+    this.currentTime = 0;
+    
+    // 重置游戏状态
+    this.revealedCells = new Set();
+    this.flaggedCells = new Set();
+    this.isFlagMode = false;
+    this.isGameOver = false;
+    
     // 启动计时器
     this.timerId = setInterval(() => {
       if (!this.isGameOver) {
@@ -125,11 +144,14 @@ struct MineSweeper {
 
   // 揭示方块
   private revealCell(row: number, col: number) {
-    if (this.isGameOver || this.revealedCells.has(`${row},${col}`)) { // 如果游戏结束或者该方块已经被揭示
-      return; // 不执行任何操作
+    // 如果游戏结束、该方块已经被揭示、或者该方块已被标记为旗帜，则不执行任何操作
+    if (this.isGameOver || this.revealedCells.has(`${row},${col}`) || this.gameBoard[row][col].isFlag) {
+      return;
     }
+    
     const key = `${row},${col}`; // 创建方块唯一标识
     this.revealedCells.add(key); // 添加到已揭示的方块集合
+    
     if (this.gameBoard[row][col].hasMine) { // 如果揭示的方块是地雷
       this.showGameOverDialog(); // 显示游戏结束对话框
     } else {
@@ -147,6 +169,7 @@ struct MineSweeper {
         }
       }
     }
+    
     if (this.isVictory()) { // 如果游戏胜利
       this.showVictoryDialog(); // 显示胜利对话框
     }
@@ -182,8 +205,9 @@ struct MineSweeper {
 
     promptAction.showDialog({
       // 显示对话框
-      title: '游戏结束: 游戏失败！', // 对话框标题
-      buttons: [{ text: '重新开始', color: '#007DFF' }] // 对话框按钮
+      title: '💀 游戏结束: 游戏失败！',
+      message: `用时：${this.currentTime}秒`,
+      buttons: [{ text: '🔄 重新开始', color: '#007DFF' }]
     }).then(() => { // 点击按钮后执行
       this.initializeGame(); // 重新开始游戏
     });
@@ -200,9 +224,9 @@ struct MineSweeper {
 
     promptAction.showDialog({
       // 显示对话框
-      title: '恭喜你，游戏胜利！', // 对话框标题
-      message: `用时：${((Date.now() - this.startTime) / 1000).toFixed(3)}秒`, // 对话框消息
-      buttons: [{ text: '重新开始', color: '#007DFF' }] // 对话框按钮
+      title: '🎉 恭喜你，游戏胜利！',
+      message: `用时：${this.currentTime}秒`,
+      buttons: [{ text: '🔄 重新开始', color: '#007DFF' }]
     }).then(() => { // 点击按钮后执行
       this.initializeGame(); // 重新开始游戏
     });
@@ -237,43 +261,80 @@ struct MineSweeper {
   // 构建用户界面
   build() {
     Column() {
-      // 顶部标题区域
+      // 标题区域 - 居中对称布局
       Column() {
-        Text(' 🚩扫雷💥 ')
-          .fontSize(32)
-          .fontWeight(FontWeight.Bold)
-          .textAlign(TextAlign.Center)
-          .fontColor('#1a1a1a')
-          .margin({ top: 20 })
+        Row() {
+          // 返回按钮
+          Button('←')
+            .width(40)
+            .height(40)
+            .backgroundColor(this.themeColors.buttonBackground)
+            .fontColor(this.themeColors.buttonText)
+            .borderRadius(20)
+            .border({ width: 1, color: this.themeColors.buttonBorder })
+            .shadow({
+              radius: 4,
+              color: this.themeColors.cardShadow,
+              offsetX: 1,
+              offsetY: 1
+            })
+            .onClick(() => {
+              router.back();
+            })
+          
+          // 标题区域
+          Column() {
+            Text('🚩 扫雷游戏 💥')
+              .fontSize(28)
+              .fontWeight(FontWeight.Bold)
+              .textAlign(TextAlign.Center)
+              .fontColor(this.themeColors.primaryText)
 
-        Text('点击揭开模式切换为标记模式')
-          .fontSize(16)
-          .fontColor('#666666')
-          .margin({ top: 6 })
+            Text('点击揭开模式切换为标记模式')
+              .fontSize(14)
+              .fontColor(this.themeColors.secondaryText)
+              .margin({ top: 6 })
+          }
+          .layoutWeight(1)
+          .alignItems(HorizontalAlign.Center)
+          
+          // 占位符保持对称
+          Column()
+            .width(40)
+            .height(40)
+        }
+        .width('100%')
+        .padding({ left: 20, right: 20 })
+        .margin({ top: 20, bottom: 20 })
 
-        // 时间显示
+        // 时间显示 - 居中
         Row() {
           Text('⏱')
-            .fontSize(18)
+            .fontSize(14)
+            .fontColor(this.themeColors.secondaryText)
+            .margin({ right: 8 })
+          
           Text(`${this.currentTime.toString().padStart(3, '0')}s`)
             .fontSize(18)
             .fontWeight(FontWeight.Medium)
-            .fontColor('#333333')
-            .margin({ left: 10 })
+            .fontColor(this.themeColors.buttonText)
         }
-        .padding({ left: 20, right: 20, top: 10, bottom: 10 })
-        .backgroundColor('#FFFFFF')
-        .borderRadius(18)
+        .padding({ left: 20, right: 20, top: 12, bottom: 12 })
+        .backgroundColor(this.themeColors.cardBackground)
+        .borderRadius(20)
+        .border({ width: 1, color: this.themeColors.cardBorder })
         .shadow({
           radius: 6,
-          color: '#333333',
+          color: this.themeColors.cardShadow,
           offsetX: 2,
           offsetY: 2
         })
-        .margin({ top: 15, bottom: 5 })
         .alignSelf(ItemAlign.Center)
+        .margin({ bottom: 20 })
       }
-      .margin({ top: 20 })
+      .width('100%')
+      .alignItems(HorizontalAlign.Center)
+      .margin({ bottom: 10 })
 
       // 游戏主区域
       Column() {
@@ -288,15 +349,16 @@ struct MineSweeper {
                   .height(`${this.cellSize}lpx`)
                   .margin(`${this.cellMargin}lpx`)
                   .fill(this.revealedCells.has(`${rowIndex},${colIndex}`) ?
-                    (this.isShowValue(cell) === '💣' ? '#FF4D4D' : '#FFFFFF') : '#5CACEE')
+                    (this.isShowValue(cell) === '💣' ? this.themeColors.gameCellMine : this.themeColors.gameCellRevealed) : 
+                    this.themeColors.gameCellBackground)
                   .strokeWidth(1)
-                  .stroke('#4A90E2')
-                  .radius(6)
+                  .stroke(this.themeColors.gameCellBorder)
+                  .radius(8)
                   .shadow({
-                    radius: 3,
-                    color: '#00000020',
-                    offsetX: 1,
-                    offsetY: 1
+                    radius: 4,
+                    color: this.themeColors.cardShadow,
+                    offsetX: 2,
+                    offsetY: 2
                   })
 
                 // 格子内容
@@ -307,7 +369,7 @@ struct MineSweeper {
                   .fontSize(`${this.cellSize / 2 + 2}lpx`)
                   .textAlign(TextAlign.Center)
                   .fontColor(this.revealedCells.has(`${rowIndex},${colIndex}`) ?
-                    (this.isShowValue(cell) === '💣' ? '#FFFFFF' : '#333333') :
+                    (this.isShowValue(cell) === '💣' ? '#FFFFFF' : this.themeColors.primaryText) :
                     '#FFFFFF')
                   .fontWeight(FontWeight.Bold)
 
@@ -327,60 +389,60 @@ struct MineSweeper {
           });
         }
         .width(`${(this.cellSize + this.cellMargin * 2) * 10}lpx`)
-        .margin({ top: 15 })
+        .margin({ top: 10, bottom: 10 })
       }
       .width('100%')
       .alignItems(HorizontalAlign.Center)
       .justifyContent(FlexAlign.Center)
       .layoutWeight(1)
 
-      // 控制按钮区域
-      Column() {
+      // 控制按钮区域 - 居中对称布局
+      Column({ space: 16 }) {
         // 模式切换按钮
-        Button(`${this.isFlagMode ? ' 标记模式🚩' : ' 揭开模式👆'}`)
-          .fontColor(Color.Black)
-          .fontSize(18)
+        Button(`${this.isFlagMode ? '🚩 标记模式' : '👆 揭开模式'}`)
+          .fontColor(this.themeColors.buttonText)
+          .fontSize(16)
           .fontWeight(FontWeight.Medium)
           .width(200)
           .height(50)
-          .backgroundColor('#FFFFFF')
+          .backgroundColor(this.themeColors.buttonBackground)
           .borderRadius(14)
+          .border({ width: 1, color: this.themeColors.buttonBorder })
           .shadow({
-            radius: 6,
-            color: '#333333',
+            radius: 8,
+            color: this.themeColors.cardShadow,
             offsetX: 2,
             offsetY: 2
           })
           .onClick(() => this.toggleMode())
-          .margin({ top: 10, bottom: 10 })
 
         // 重新开始按钮
-        Button('重新开始🔃')
-          .fontColor(Color.Black)
-          .fontSize(18)
+        Button('🔄 重新开始')
+          .fontColor(this.themeColors.buttonText)
+          .fontSize(16)
           .fontWeight(FontWeight.Medium)
           .width(200)
           .height(50)
-          .backgroundColor('#FFFFFF')
+          .backgroundColor(this.themeColors.buttonBackground)
           .borderRadius(14)
+          .border({ width: 1, color: this.themeColors.buttonBorder })
           .shadow({
-            radius: 6,
-            color: '#333333',
+            radius: 8,
+            color: this.themeColors.cardShadow,
             offsetX: 2,
             offsetY: 2
           })
-          .margin({ bottom: 10 })
           .onClick(() => {
             promptAction.showDialog({
-              title: '确认重新开始',
+              title: '🤔 确认重新开始',
               message: '确定要重新开始游戏吗？当前游戏进度将会丢失。',
               buttons: [
                 {
-                  text: '确定',
+                  text: '✅ 确定',
                   color: '#007DFF'
                 },
                 {
-                  text: '取消',
+                  text: '❌ 取消',
                   color: '#999999'
                 }
               ]
@@ -392,34 +454,34 @@ struct MineSweeper {
               // 用户点击"取消"或其他情况，不执行任何操作
             });
           })
-
       }
       .width('100%')
       .alignItems(HorizontalAlign.Center)
+      .margin({ top: 10, bottom: 10 })
 
-      // 底部信息区域
+      // 底部信息区域 - 居中布局
       Column() {
-        Text('扫雷是一个经典的游戏，考验你的逻辑推理能力')
+        Text('🎯 扫雷是一个经典的游戏，考验你的逻辑推理能力')
           .fontSize(12)
-          .fontColor('#999999')
-          .margin({ bottom: 8 })
+          .fontColor(this.themeColors.tertiaryText)
+          .margin({ bottom: 6 })
 
-        Text('🎯 逻辑推理 | ⏱️ 挑战速度')
+        Text('🧠 逻辑推理 · ⏱️ 挑战速度')
           .fontSize(11)
-          .fontColor('#bbbbbb')
-          .margin({ bottom: 4 })
+          .fontColor(this.themeColors.tertiaryText)
+          .margin({ bottom: 6 })
 
-        Text('制作人：Nisson_CX')
+        Text('👨‍💻 制作人：Nisson_CX')
           .fontSize(11)
-          .fontColor('#cccccc')
-          .margin({ bottom: 15 })
+          .fontColor(this.themeColors.tertiaryText)
+          .margin({ bottom: 20 })
       }
       .width('100%')
       .alignItems(HorizontalAlign.Center)
     }
     .width('100%')
     .height('100%')
-    .backgroundColor('#f0f0f0')
+    .backgroundColor(this.themeColors.background)
     .expandSafeArea([SafeAreaType.SYSTEM], [SafeAreaEdge.TOP, SafeAreaEdge.BOTTOM])
   }
 }

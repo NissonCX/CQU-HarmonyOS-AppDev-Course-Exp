@@ -2,7 +2,7 @@
   "src": [
     "pages/Index",
     "pages/24Points",
-    "pages/2048",
+    "pages/SlidingPuzzle",
     "pages/Minesweeper"
 
   ]
