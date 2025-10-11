@@ -587,6 +587,27 @@ struct Game24Points {
           })
           .placeholderColor(this.themeColors.secondaryText)
           .fontColor(this.themeColors.inputText)
+        
+        // 提交按钮
+        Button('✅ 提交答案')
+          .width(150)
+          .height(50)
+          .fontSize(16)
+          .backgroundColor(this.themeColors.buttonBackground)
+          .fontColor(this.themeColors.buttonText)
+          .borderRadius(14)
+          .border({ width: 1, color: this.themeColors.buttonBorder })
+          .shadow({
+            radius: 8,
+            color: this.themeColors.cardShadow,
+            offsetX: 2,
+            offsetY: 2
+          })
+          .enabled(!this.gameFinished)
+          .onClick(() => {
+            this.submitAnswer();
+          })
+          .margin({ bottom: 20 })
       }
       .width('100%')
       .alignItems(HorizontalAlign.Center)
