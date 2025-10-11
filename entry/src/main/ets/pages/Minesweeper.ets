@@ -4,6 +4,8 @@ import router from '@ohos.router';
 import { Cell } from '../model/Cell'
 import { ThemeManager } from '../model/ThemeManager';
 import { ThemeType, ThemeColors } from '../model/Theme';
+import { MinesweeperRecordData } from '../model/MinesweeperRecord';
+import { MinesweeperStorage } from '../utils/MinesweeperStorage';
 
 // 定义扫雷游戏组件
 @Entry
@@ -26,6 +28,7 @@ struct MineSweeper {
   // 主题相关状态
   @State private currentTheme: ThemeType = ThemeManager.getInstance().getCurrentTheme();
   @State private themeColors: ThemeColors = ThemeManager.getInstance().getCurrentColors();
+  @State private playerLevel: string = '';
   
   // 组件加载时初始化游戏和添加主题监听器
   aboutToAppear(): void {
@@ -36,6 +39,9 @@ struct MineSweeper {
       this.currentTheme = theme;
       this.themeColors = colors;
     });
+    
+    // 加载玩家等级
+    this.updatePlayerLevel();
   }
   
   // 组件销毁时清除定时器和移除主题监听器
@@ -202,6 +208,9 @@ struct MineSweeper {
       clearInterval(this.timerId);
       this.timerId = -1;
     }
+    
+    // 保存失败记录
+    this.saveRecord(this.currentTime, false);
 
     promptAction.showDialog({
       // 显示对话框
@@ -214,13 +223,19 @@ struct MineSweeper {
   }
 
   // 显示胜利对话框
-  private showVictoryDialog() {
+  private async showVictoryDialog() {
     this.isGameOver = true; // 设置游戏结束
     // 清除定时器
     if (this.timerId !== -1) {
       clearInterval(this.timerId);
       this.timerId = -1;
     }
+    
+    // 保存记录
+    await this.saveRecord(this.currentTime, true);
+    
+    // 更新玩家等级
+    await this.updatePlayerLevel();
 
     promptAction.showDialog({
       // 显示对话框
@@ -243,6 +258,48 @@ struct MineSweeper {
       }
     }
     return revealedNonMineCount == 90; // 如果非地雷方块全部揭示，则游戏胜利
+  }
+  
+  // 保存游戏记录
+  private async saveRecord(time: number, isWin: boolean = true): Promise<void> {
+    try {
+      // 创建新记录
+      const newRecord: MinesweeperRecordData = {
+        id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
+        time: time,
+        timestamp: Date.now(),
+        isWin: isWin
+      };
+      
+      // 保存到preferences
+      const storage = MinesweeperStorage.getInstance();
+      await storage.saveRecord(newRecord);
+    } catch (e) {
+      console.error('保存扫雷记录失败:', e);
+    }
+  }
+  
+  // 更新玩家等级
+  private updatePlayerLevel(): void {
+    // 异步获取记录并更新玩家等级
+    MinesweeperStorage.getInstance().getRecords()
+      .then((records: MinesweeperRecordData[]) => {
+        const wins = records.filter(record => record.isWin).length;
+        
+        if (wins >= 20) {
+          this.playerLevel = '骨灰级玩家';
+        } else if (wins >= 10) {
+          this.playerLevel = '优秀玩家';
+        } else if (wins >= 5) {
+          this.playerLevel = '菜鸟玩家';
+        } else {
+          this.playerLevel = '';
+        }
+      })
+      .catch((e: Error) => {
+        console.error('更新玩家等级失败:', e);
+        this.playerLevel = '';
+      });
   }
 
   // 决定是否显示方块值
@@ -309,15 +366,28 @@ struct MineSweeper {
 
         // 时间显示 - 居中
         Row() {
-          Text('⏱')
-            .fontSize(14)
-            .fontColor(this.themeColors.secondaryText)
-            .margin({ right: 8 })
-          
-          Text(`${this.currentTime.toString().padStart(3, '0')}s`)
-            .fontSize(18)
-            .fontWeight(FontWeight.Medium)
-            .fontColor(this.themeColors.buttonText)
+          Column() {
+            Row() {
+              Text('⏱')
+                .fontSize(14)
+                .fontColor(this.themeColors.secondaryText)
+                .margin({ right: 8 })
+              
+              Text(`${this.currentTime.toString().padStart(3, '0')}s`)
+                .fontSize(18)
+                .fontWeight(FontWeight.Medium)
+                .fontColor(this.themeColors.buttonText)
+            }
+            
+            if (this.playerLevel) {
+              Row() {
+                Text(`🏆 等级: ${this.playerLevel}`)
+                  .fontSize(12)
+                  .fontColor(this.themeColors.secondaryText)
+                  .margin({ top: 4 })
+              }
+            }
+          }
         }
         .padding({ left: 20, right: 20, top: 12, bottom: 12 })
         .backgroundColor(this.themeColors.cardBackground)
@@ -395,16 +465,17 @@ struct MineSweeper {
       .alignItems(HorizontalAlign.Center)
       .justifyContent(FlexAlign.Center)
       .layoutWeight(1)
+      .margin({ bottom: 50 })
 
       // 控制按钮区域 - 居中对称布局
       Column({ space: 16 }) {
         // 模式切换按钮
         Button(`${this.isFlagMode ? '🚩 标记模式' : '👆 揭开模式'}`)
           .fontColor(this.themeColors.buttonText)
-          .fontSize(16)
+          .fontSize(15)
           .fontWeight(FontWeight.Medium)
-          .width(200)
-          .height(50)
+          .width(180)
+          .height(45)
           .backgroundColor(this.themeColors.buttonBackground)
           .borderRadius(14)
           .border({ width: 1, color: this.themeColors.buttonBorder })
@@ -416,13 +487,33 @@ struct MineSweeper {
           })
           .onClick(() => this.toggleMode())
 
+        // 记录按钮
+        Button('📊 游戏记录')
+          .fontColor(this.themeColors.buttonText)
+          .fontSize(15)
+          .fontWeight(FontWeight.Medium)
+          .width(180)
+          .height(45)
+          .backgroundColor(this.themeColors.buttonBackground)
+          .borderRadius(14)
+          .border({ width: 1, color: this.themeColors.buttonBorder })
+          .shadow({
+            radius: 8,
+            color: this.themeColors.cardShadow,
+            offsetX: 2,
+            offsetY: 2
+          })
+          .onClick(() => {
+            router.pushUrl({ url: 'pages/MinesweeperRecords' });
+          })
+          
         // 重新开始按钮
         Button('🔄 重新开始')
           .fontColor(this.themeColors.buttonText)
-          .fontSize(16)
+          .fontSize(15)
           .fontWeight(FontWeight.Medium)
-          .width(200)
-          .height(50)
+          .width(180)
+          .height(45)
           .backgroundColor(this.themeColors.buttonBackground)
           .borderRadius(14)
           .border({ width: 1, color: this.themeColors.buttonBorder })
@@ -457,7 +548,7 @@ struct MineSweeper {
       }
       .width('100%')
       .alignItems(HorizontalAlign.Center)
-      .margin({ top: 10, bottom: 10 })
+      .margin({ top: 40, bottom: 10 })
 
       // 底部信息区域 - 居中布局
       Column() {

@@ -78,10 +78,10 @@ export class ThemeConfig {
     cardShadow: '#00000015',
     
     // 游戏特定颜色
-    gameCellBackground: '#3498db',
-    gameCellRevealed: '#ffffff',
-    gameCellMine: '#e74c3c',
-    gameCellBorder: '#2980b9',
+    gameCellBackground: '#d4dae0',
+    gameCellRevealed: '#f8f9fa',
+    gameCellMine: '#ff5252',
+    gameCellBorder: '#b5c1cd',
     
     // 状态颜色
     successColor: '#27ae60',

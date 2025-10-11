@@ -3,7 +3,7 @@
     "pages/Index",
     "pages/24Points",
     "pages/SlidingPuzzle",
-    "pages/Minesweeper"
-
+    "pages/Minesweeper",
+    "pages/MinesweeperRecords"
   ]
 }
