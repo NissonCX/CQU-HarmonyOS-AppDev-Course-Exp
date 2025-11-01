@@ -2,6 +2,7 @@ import { AbilityConstant, ConfigurationConstant, UIAbility, Want } from '@kit.Ab
 import { hilog } from '@kit.PerformanceAnalysisKit';
 import { window } from '@kit.ArkUI';
 import { MinesweeperStorage } from '../utils/MinesweeperStorage';
+import { SlidingPuzzleStorage } from '../utils/SlidingPuzzleStorage';
 
 const DOMAIN = 0x0000;
 
@@ -21,6 +22,9 @@ export default class EntryAbility extends UIAbility {
 
     // 初始化扫雷存储
     MinesweeperStorage.getInstance().initialize(this.context);
+    
+    // 初始化拼图存储
+    SlidingPuzzleStorage.getInstance().initialize(this.context);
 
     windowStage.loadContent('pages/Index', (err) => {
       if (err.code) {

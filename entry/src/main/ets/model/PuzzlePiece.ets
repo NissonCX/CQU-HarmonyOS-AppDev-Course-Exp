@@ -5,6 +5,14 @@
  */
 
 /**
+ * 拼图块图像位置偏移量接口
+ */
+interface ImageOffset {
+  x: string;
+  y: string;
+}
+
+/**
  * 拼图块类
  */
 export class PuzzlePiece {
@@ -22,6 +30,37 @@ export class PuzzlePiece {
     this.correctRow = correctRow;
     this.correctCol = correctCol;
     this.isEmpty = isEmpty;
+  }
+  
+  /**
+   * 获取拼图块在图像中的位置偏移量
+   * @param gridSize 网格大小
+   * @returns 位置偏移量对象
+   */
+  getImageOffset(gridSize: number): ImageOffset {
+    if (this.isEmpty) {
+      return { x: '0%', y: '0%' };
+    }
+    
+    // 计算拼图块在完整图像中的位置
+    // 对于3x3网格，每个拼图块显示图像的1/3部分
+    // 使用当前行列位置，因为拼图块移动后需要显示当前位置对应的图像部分
+    const xOffset = -this.col * (100 / gridSize);
+    const yOffset = -this.row * (100 / gridSize);
+    
+    return { 
+      x: xOffset + '%', 
+      y: yOffset + '%' 
+    };
+  }
+  
+  /**
+   * 获取拼图块的图像尺寸
+   * @param gridSize 网格大小
+   * @returns 图像尺寸
+   */
+  getImageSize(gridSize: number): string {
+    return (gridSize * 100) + '%';
   }
   
   /**
