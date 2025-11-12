@@ -145,16 +145,16 @@ struct Index {
           });
         })
 
-        // 拼图华容道按钮
+        // 拼图游戏按钮
         Button() {
           Column() {
-            Text('🧩 拼图华容道 🧠')
+            Text('🧩 拼图游戏 🎯')
               .fontSize(22)
               .fontWeight(FontWeight.Bold)
               .fontColor(this.themeColors.buttonText)
               .margin({ bottom: 8 })
             
-            Text('逻辑推理，空间想象')
+            Text('图片拼图，挑战关卡')
               .fontSize(14)
               .fontColor(this.themeColors.secondaryText)
           }
@@ -176,7 +176,7 @@ struct Index {
         })
         .onClick(() => {
           router.pushUrl({
-            url: 'pages/SlidingPuzzle'
+            url: 'pages/ChooseLevel'
           });
         })
       }

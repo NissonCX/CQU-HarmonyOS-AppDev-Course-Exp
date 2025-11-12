@@ -16,7 +16,7 @@
   </a>
 </p>
 
-> 基于 HarmonyOS 和 ArkTS 开发的经典益智游戏合集，包含扫雷、24点、拼图华容道等多种趣味游戏
+> 基于 HarmonyOS 和 ArkTS 开发的经典益智游戏合集，包含扫雷、24点等多种趣味游戏
 
 ## 📋 目录
 
@@ -38,7 +38,6 @@
 目前包含的游戏：
 - 扫雷游戏 (Minesweeper) - ✅ 已完成
 - 24点游戏 (24 Points) - ✅ 已完成
-- 拼图华容道 (Sliding Puzzle) - 🚧 开发中 (Demo版本)
 - 2048游戏 - 🚧 开发中
 
 ## 1. 软件功能
@@ -95,28 +94,6 @@
 - 美观的弹窗式答案展示
 - 支持明暗主题切换
 
-### 🧩 拼图华容道 (Sliding Puzzle)
-
-一款经典的滑动拼图游戏，通过移动方块使其按数字顺序排列。
-
-当前状态：开发中 (Demo版本) - 已实现基本游戏功能，包括拼图生成、打乱、移动和完成判断，但仍在完善中。
-
-主要功能：
-- 4x4 的拼图网格布局
-- 随机打乱的初始状态
-- 智能移动检测，仅允许合法移动
-- 实时计时和步数统计功能
-- 胜负判断与游戏结果提示
-- 重新开始功能
-
-游戏界面特色：
-- 现代化毛玻璃视觉风格设计
-- 使用阴影和圆角增强界面层次感
-- 采用 emoji 图标（🧩⏱）增强视觉表现力
-- 精心调配的配色方案，追求专业和美观的界面
-- 响应式布局适配不同屏幕尺寸
-- 支持明暗主题切换
-
 ### 🔢 2048游戏
 
 一款风靡全球的数字合成游戏，通过滑动合并相同数字方块。
@@ -171,8 +148,6 @@
 
 2. **24点游戏**：支持多种符号输入并自动转换，降低用户学习成本；无解判断机制增加游戏策略性。
 
-3. **拼图华容道**：通过算法确保生成的拼图有解，智能移动检测保证游戏的公平性。
-
 ## 4. 技术要点
 
 ### 开发技术栈
@@ -199,7 +174,6 @@
 
 - [Cell](entry/src/main/ets/model/Cell.ets): 扫雷游戏中单个格子的数据模型
 - [Card](entry/src/main/ets/model/Card.ets): 24点游戏中扑克牌的数据模型
-- [PuzzlePiece](entry/src/main/ets/model/PuzzlePiece.ets): 拼图华容道中拼图块的数据模型
 - [Game24Logic](entry/src/main/ets/model/Game24Logic.ets): 24点游戏核心逻辑实现
 - [ExpressionEvaluator](entry/src/main/ets/utils/ExpressionEvaluator.ets): 表达式计算工具
 - [ThemeManager](entry/src/main/ets/model/ThemeManager.ets): 主题管理器
@@ -207,7 +181,6 @@
 - [Index](entry/src/main/ets/pages/Index.ets): 应用主页，展示游戏列表
 - [Minesweeper](entry/src/main/ets/pages/Minesweeper.ets): 扫雷游戏主界面与核心逻辑
 - [Game24Points](entry/src/main/ets/pages/24Points.ets): 24点游戏界面
-- [SlidingPuzzle](entry/src/main/ets/pages/SlidingPuzzle.ets): 拼图华容道游戏界面
 - [Game2048](entry/src/main/ets/pages/2048.ets): 2048游戏界面（开发中）
 
 ## 5. 程序的结构
@@ -239,7 +212,6 @@
 - [`Index.ets`](entry/src/main/ets/pages/Index.ets) - 应用主页，展示游戏列表
 - [`Minesweeper.ets`](entry/src/main/ets/pages/Minesweeper.ets) - 扫雷游戏主页面
 - [`24Points.ets`](entry/src/main/ets/pages/24Points.ets) - 24点游戏页面
-- [`SlidingPuzzle.ets`](entry/src/main/ets/pages/SlidingPuzzle.ets) - 拼图华容道游戏页面
 - [`2048.ets`](entry/src/main/ets/pages/2048.ets) - 2048游戏页面（开发中）
 - [`MinesweeperRecords.ets`](entry/src/main/ets/pages/MinesweeperRecords.ets) - 扫雷游戏战绩记录页面
 
@@ -247,7 +219,6 @@
 
 - [`Cell.ets`](entry/src/main/ets/model/Cell.ets) - 扫雷游戏单元格数据模型
 - [`Card.ets`](entry/src/main/ets/model/Card.ets) - 24点游戏扑克牌数据模型
-- [`PuzzlePiece.ets`](entry/src/main/ets/model/PuzzlePiece.ets) - 拼图华容道拼图块数据模型
 - [`Game24Logic.ets`](entry/src/main/ets/model/Game24Logic.ets) - 24点游戏核心逻辑
 - [`Theme.ets`](entry/src/main/ets/model/Theme.ets) - 主题配置类
 - [`ThemeManager.ets`](entry/src/main/ets/model/ThemeManager.ets) - 主题管理器
@@ -317,26 +288,6 @@ graph TD
     Q --> R
 ```
 
-### 拼图华容道执行流程
-
-```mermaid
-graph TD
-    A[开始游戏] --> B[生成标准拼图]
-    B --> C[打乱拼图]
-    C --> D[启动计时器]
-    D --> E[重置移动步数]
-    E --> F[等待用户操作]
-    F --> G{用户点击拼图块}
-    G --> H{是否可以移动}
-    H -->|是| I[交换拼图块位置]
-    H -->|否| F
-    I --> J[增加移动步数]
-    J --> K{是否完成拼图}
-    K -->|是| L[游戏完成]
-    K -->|否| F
-    L --> M[显示完成信息]
-```
-
 ## 7. 模型的详细设计
 
 ### 7.1 数据模型设计
@@ -355,16 +306,6 @@ graph TD
 [Card.ets](entry/src/main/ets/model/Card.ets) 类用于表示24点游戏中的一张扑克牌，包含以下属性：
 - `suit`: 花色 (红桃、方块、梅花、黑桃)
 - `rank`: 点数 (A=1, J=11, Q=12, K=13)
-
-#### PuzzlePiece 类 (拼图块)
-
-[PuzzlePiece.ets](entry/src/main/ets/model/PuzzlePiece.ets) 类用于表示拼图华容道中的单个拼图块，包含以下属性：
-- `id`: 块的唯一标识
-- `row`: 当前行位置
-- `col`: 当前列位置
-- `correctRow`: 正确的行位置
-- `correctCol`: 正确的列位置
-- `isEmpty`: 是否为空块
 
 #### MinesweeperRecord 类 (扫雷游戏记录)
 
@@ -468,23 +409,6 @@ graph TD
 - 响应式布局适配不同屏幕尺寸
 - 支持明暗主题切换
 
-### 8.4 拼图华容道界面设计
-
-拼图华容道界面分为几个主要区域：
-
-1. **标题区域**：包含返回按钮、游戏标题和说明文字
-2. **计时区域**：显示当前游戏时间和移动步数
-3. **游戏区域**：4x4的拼图网格
-4. **控制区域**：包含重新开始按钮和游戏完成提示
-5. **底部信息区域**：显示游戏说明和制作人信息
-
-视觉设计特点：
-- 使用emoji图标增强视觉效果（🧩⏱）
-- 现代化的卡片式设计
-- 精心调配的配色方案，提升视觉体验
-- 响应式布局适配不同屏幕尺寸
-- 支持明暗主题切换
-
 ## 9. 其他
 
 ### 第三方工具和资源
@@ -572,14 +496,12 @@ graph TD
 - [`Index.ets`](entry/src/main/ets/pages/Index.ets) - 应用主页，展示游戏列表
 - [`Minesweeper.ets`](entry/src/main/ets/pages/Minesweeper.ets) - 扫雷游戏主页面
 - [`24Points.ets`](entry/src/main/ets/pages/24Points.ets) - 24点游戏页面
-- [`SlidingPuzzle.ets`](entry/src/main/ets/pages/SlidingPuzzle.ets) - 拼图华容道游戏页面
 - [`2048.ets`](entry/src/main/ets/pages/2048.ets) - 2048游戏页面（开发中）
 
 ### 数据模型
 
 - [`Cell.ets`](entry/src/main/ets/model/Cell.ets) - 扫雷游戏单元格数据模型
 - [`Card.ets`](entry/src/main/ets/model/Card.ets) - 24点游戏扑克牌数据模型
-- [`PuzzlePiece.ets`](entry/src/main/ets/model/PuzzlePiece.ets) - 拼图华容道拼图块数据模型
 - [`Game24Logic.ets`](entry/src/main/ets/model/Game24Logic.ets) - 24点游戏核心逻辑
 - [`Theme.ets`](entry/src/main/ets/model/Theme.ets) - 主题配置类
 - [`ThemeManager.ets`](entry/src/main/ets/model/ThemeManager.ets) - 主题管理器
@@ -715,157 +637,3 @@ graph TD
 ---
 
 <p align="center">Made with ❤️ by Nisson_CX | 重庆大学ArkTS课程实验项目</p>
-
-## 实验结果及分析
-
-### 扫雷游戏测试结果
-
-扫雷游戏已成功实现所有核心功能，包括：
-- 10x10网格布局和10个随机分布的地雷
-- 双模式操作（揭开/标记模式）
-- 智能展开功能
-- 实时计时和战绩记录
-- 胜负判断和游戏结束提示
-
-在测试过程中，游戏运行稳定，界面响应流畅。用户可以通过切换模式按钮在揭开和标记模式之间切换，有效防止误触。智能展开功能在点击空白区域时能够正确展开周围区域，提高游戏体验。
-
-### 24点游戏测试结果
-
-24点游戏已实现完整的表达式验证和计算功能：
-- 随机生成四张扑克牌
-- 表达式解析和验证
-- 实时计时功能
-- 无解判断功能
-- 参考答案查看功能
-
-经过多轮测试，表达式验证系统能够正确识别各种输入格式，并自动转换特殊符号（如×÷−）。系统能够准确判断用户答案的正确性，并提供详细的反馈。
-
-### 拼图华容道测试结果
-
-拼图华容道已实现基本游戏功能：
-- 4x4网格布局
-- 随机打乱初始状态
-- 智能移动检测
-- 实时计时和步数统计
-- 胜负判断
-
-游戏能够正确生成可解的拼图，并在用户完成拼图时给出提示。移动检测算法确保只有合法移动才会被接受。
-
-### 性能分析
-
-所有游戏在不同设备上均表现出良好的性能：
-- 界面渲染流畅，无明显卡顿
-- 状态更新及时，响应迅速
-- 内存占用合理，无内存泄漏现象
-- 主题切换功能响应迅速
-
-## 源程序调试过程
-
-### 遇到的主要问题及解决方案
-
-#### 1. 表达式验证问题
-
-在开发24点游戏时，最初使用的表达式验证方法不够健壮，无法处理用户输入的各种格式。
-
-**解决方案**：
-- 实现了专门的[ExpressionEvaluator](entry/src/main/ets/utils/ExpressionEvaluator.ets)工具类
-- 添加了符号自动转换功能（×→*，÷→/，−→-）
-- 增强了错误处理机制，提供详细的错误提示
-
-#### 2. 扫雷游戏展开算法问题
-
-扫雷游戏的智能展开功能在初期实现时存在边界检查不完善的问题，导致在边缘区域点击时会出现错误。
-
-**解决方案**：
-- 重新设计了递归展开算法
-- 添加了完善的边界检查
-- 优化了性能，避免不必要的递归调用
-
-#### 3. 主题切换响应问题
-
-在实现主题切换功能时，发现部分组件无法及时响应主题变化。
-
-**解决方案**：
-- 使用[@ObservedV2](entry/src/main/ets/model/ThemeManager.ets)装饰器优化状态管理
-- 确保所有使用主题颜色的组件都正确订阅了主题变化事件
-- 实现了[ThemeManager](entry/src/main/ets/model/ThemeManager.ets)单例模式，确保全局状态一致
-
-#### 4. 响应式布局适配问题
-
-在不同屏幕尺寸的设备上，部分组件布局出现错位。
-
-**解决方案**：
-- 使用相对单位和百分比布局
-- 添加了媒体查询适配不同屏幕尺寸
-- 优化了组件的弹性布局属性
-
-### 调试工具和方法
-
-- 使用DevEco Studio的调试功能进行断点调试
-- 利用日志输出跟踪程序执行流程
-- 在关键节点添加状态监控
-- 使用模拟器测试不同设备的兼容性
-
-## 实验总结与体会
-
-### 技术收获
-
-通过本次实验，我在以下几个方面有了显著提升：
-
-1. **ArkTS语言掌握**：
-   - 熟练掌握了ArkTS的基本语法和特性
-   - 深入理解了状态管理机制（@State、@ObservedV2等）
-   - 学会了面向对象编程在ArkTS中的应用
-
-2. **HarmonyOS开发经验**：
-   - 掌握了ArkUI框架的使用方法
-   - 理解了HarmonyOS应用的生命周期管理
-   - 学会了页面导航和数据传递
-
-3. **UI设计能力**：
-   - 掌握了现代化界面设计原则
-   - 学会了响应式布局的设计方法
-   - 提升了用户体验设计能力
-
-4. **问题解决能力**：
-   - 提高了调试技巧和问题定位能力
-   - 学会了查阅官方文档和社区资源
-   - 增强了独立思考和解决问题的能力
-
-### 项目亮点
-
-1. **统一的设计语言**：
-   所有游戏采用统一的视觉风格和交互模式，提供一致的用户体验。
-
-2. **创新的交互设计**：
-   扫雷游戏的双模式操作设计有效解决了移动设备上的误触问题。
-
-3. **完善的主题系统**：
-   实现了全局主题管理，支持一键切换明暗主题。
-
-4. **健壮的表达式解析**：
-   24点游戏的表达式验证系统能够处理各种输入格式，并提供友好的错误提示。
-
-### 不足与改进方向
-
-1. **游戏内容有待丰富**：
-   目前游戏种类还不够丰富，后续可以添加更多经典游戏。
-
-2. **社交功能缺失**：
-   缺少排行榜和好友对战等社交功能，可以考虑后续添加。
-
-3. **音效和动画**：
-   游戏缺少音效和动画效果，可以进一步提升用户体验。
-
-4. **性能优化**：
-   在低端设备上仍有优化空间，可以进一步提升性能表现。
-
-### 心得体会
-
-通过这次完整的HarmonyOS应用开发实践，我深刻体会到了移动应用开发的复杂性和挑战性。从最初的需求分析、技术选型，到界面设计、功能实现，再到调试优化、文档编写，每个环节都需要仔细考虑和精心实现。
-
-在开发过程中，我不仅提升了技术能力，更重要的是培养了系统性思维和工程化开发的理念。面对各种技术难题，我学会了如何分析问题、查找资料、设计方案并最终解决问题。
-
-HarmonyOS作为一个新兴的开发平台，具有很大的发展潜力。通过本次实验，我对HarmonyOS的开发体系有了深入的了解，也对移动应用开发有了更全面的认识。这为我今后的学习和工作奠定了坚实的基础。
-
-总的来说，这次实验不仅让我掌握了HarmonyOS开发的相关技术，更重要的是培养了我独立思考、解决问题和持续学习的能力。我相信这些经验和能力将对我未来的学习和职业发展产生积极的影响。

@@ -3,6 +3,22 @@
     {
       "name": "start_window_background",
       "value": "#FFFFFF"
+    },
+    {
+      "name": "picture_background",
+      "value": "#E0E0E0"
+    },
+    {
+      "name": "blank_picture_background",
+      "value": "#CCCCCC"
+    },
+    {
+      "name": "allow",
+      "value": "#4CAF50"
+    },
+    {
+      "name": "forbid",
+      "value": "#9E9E9E"
     }
   ]
 }

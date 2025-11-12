@@ -11,6 +11,22 @@
     {
       "name": "EntryAbility_label",
       "value": "经典小游戏_CX"
+    },
+    {
+      "name": "start",
+      "value": "开始"
+    },
+    {
+      "name": "restart",
+      "value": "重新开始"
+    },
+    {
+      "name": "cancel",
+      "value": "取消"
+    },
+    {
+      "name": "submit",
+      "value": "确定"
     }
   ]
 }

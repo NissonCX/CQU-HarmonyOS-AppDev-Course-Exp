@@ -135,6 +135,7 @@ export class Game24Logic {
         const remainingExpressions = expressions.filter((_, index) => index !== i && index !== j);
         
         // 尝试所有可能的运算 (+, -, *, /)
+        // 定义Operation接口来替代对象字面量类型
         interface Operation {
           result: number;
           expression: string;

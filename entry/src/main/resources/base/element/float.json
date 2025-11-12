@@ -3,6 +3,42 @@
     {
       "name": "page_text_font_size",
       "value": "50fp"
+    },
+    {
+      "name": "image_width",
+      "value": "150vp"
+    },
+    {
+      "name": "image_height",
+      "value": "150vp"
+    },
+    {
+      "name": "list_height",
+      "value": "200vp"
+    },
+    {
+      "name": "margin_bottom",
+      "value": "20vp"
+    },
+    {
+      "name": "imageShow_height",
+      "value": "200vp"
+    },
+    {
+      "name": "grid_height",
+      "value": "400vp"
+    },
+    {
+      "name": "gap",
+      "value": "2vp"
+    },
+    {
+      "name": "button_height",
+      "value": "50vp"
+    },
+    {
+      "name": "button_font_size",
+      "value": "18fp"
     }
   ]
 }

@@ -34,6 +34,7 @@ export class ExpressionEvaluator {
       
       // 检查表达式是否为空
       if (!processedExpression) {
+        // 定义结果对象的类型
         const result: EvaluationResult = {
           isValid: false,
           message: "表达式不能为空"
